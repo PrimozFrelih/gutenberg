@@ -352,6 +352,7 @@ export default class Editable extends Component {
 			HTML: this.pastedContent || HTML,
 			plainText: this.pastedPlainText,
 			mode,
+			additionalInlineNodes: this.props.additionalInlineNodes,
 		} );
 
 		if ( typeof content === 'string' ) {

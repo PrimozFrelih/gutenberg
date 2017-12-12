@@ -36,7 +36,7 @@ import shortcodeConverter from './shortcode-converter';
  *                                            * 'BLOCKS': Always handle as blocks, and return array of blocks.
  * @return {Array|String}                     A list of blocks or a string, depending on `handlerMode`.
  */
-export default function rawHandler( { HTML, plainText = '', mode = 'AUTO' } ) {
+export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', additionalInlineNodes = [] } ) {
 	// First of all, strip any meta tags.
 	HTML = HTML.replace( /<meta[^>]+>/, '' );
 
@@ -65,7 +65,7 @@ export default function rawHandler( { HTML, plainText = '', mode = 'AUTO' } ) {
 	const hasShortcodes = pieces.length > 1;
 
 	// True if mode is auto, no shortcode is included and HTML verifies the isInlineContent condition
-	const isAutoModeInline = mode === 'AUTO' && isInlineContent( HTML ) && ! hasShortcodes;
+	const isAutoModeInline = mode === 'AUTO' && isInlineContent( HTML, additionalInlineNodes ) && ! hasShortcodes;
 
 	// Return filtered HTML if condition is true
 	if ( mode === 'INLINE' || isAutoModeInline ) {
@@ -74,7 +74,7 @@ export default function rawHandler( { HTML, plainText = '', mode = 'AUTO' } ) {
 			formattingTransformer,
 			stripAttributes,
 			commentRemover,
-			createUnwrapper( ( node ) => ! isInline( node ) ),
+			createUnwrapper( ( node ) => ! isInline( node, additionalInlineNodes ) ),
 		] );
 
 		// Allows us to ask for this information when we get a report.

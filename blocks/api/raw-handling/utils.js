@@ -63,8 +63,8 @@ export function isAttributeWhitelisted( tag, attribute ) {
 	);
 }
 
-export function isInline( node ) {
-	return !! inlineWhitelist[ node.nodeName.toLowerCase() ];
+export function isInline( node, additionalInlineNodes = [] ) {
+	return !! inlineWhitelist[ node.nodeName.toLowerCase() ] || additionalInlineNodes.indexOf( node.nodeName.toLowerCase() ) !== -1;
 }
 
 export function isInlineWrapper( node ) {

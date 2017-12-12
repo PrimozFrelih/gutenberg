@@ -3,7 +3,7 @@
  */
 import { isInline, isDoubleBR } from './utils';
 
-export default function( HTML ) {
+export default function( HTML, additionalInlineNodes = [] ) {
 	const doc = document.implementation.createHTMLDocument( '' );
 
 	doc.body.innerHTML = HTML;
@@ -14,8 +14,8 @@ export default function( HTML ) {
 }
 
 function deepCheck( nodes ) {
-	return nodes.every( ( node ) => {
-		return ( 'SPAN' === node.nodeName || isInline( node ) ) &&
-			deepCheck( Array.from( node.children ) );
+	return nodes.every( ( node, additionalInlineNodes ) => {
+		return ( 'SPAN' === node.nodeName || isInline( node, additionalInlineNodes ) ) &&
+			deepCheck( Array.from( node.children ), additionalInlineNodes );
 	} );
 }
