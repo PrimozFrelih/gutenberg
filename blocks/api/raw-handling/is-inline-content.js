@@ -3,19 +3,19 @@
  */
 import { isInline, isDoubleBR } from './utils';
 
-export default function( HTML, additionalInlineNodes = [] ) {
+export default function( HTML, additionalInlineWhitelist = [] ) {
 	const doc = document.implementation.createHTMLDocument( '' );
 
 	doc.body.innerHTML = HTML;
 
 	const nodes = Array.from( doc.body.children );
 
-	return ! nodes.some( isDoubleBR ) && deepCheck( nodes );
+	return ! nodes.some( isDoubleBR ) && deepCheck( nodes, additionalInlineWhitelist );
 }
 
-function deepCheck( nodes ) {
-	return nodes.every( ( node, additionalInlineNodes ) => {
-		return ( 'SPAN' === node.nodeName || isInline( node, additionalInlineNodes ) ) &&
-			deepCheck( Array.from( node.children ), additionalInlineNodes );
+function deepCheck( nodes, additionalInlineWhitelist = [] ) {
+	return nodes.every( ( node ) => {
+		return ( 'SPAN' === node.nodeName || isInline( node, additionalInlineWhitelist ) ) &&
+			deepCheck( Array.from( node.children ), additionalInlineWhitelist );
 	} );
 }

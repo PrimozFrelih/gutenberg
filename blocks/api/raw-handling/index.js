@@ -28,15 +28,16 @@ import shortcodeConverter from './shortcode-converter';
 /**
  * Converts an HTML string to known blocks. Strips everything else.
  *
- * @param  {String}       options.HTML        The HTML to convert.
- * @param  {String}       [options.plainText] Plain text version.
- * @param  {String}       [options.mode]      Handle content as blocks or inline content.
- *                                            * 'AUTO': Decide based on the content passed.
- *                                            * 'INLINE': Always handle as inline content, and return string.
- *                                            * 'BLOCKS': Always handle as blocks, and return array of blocks.
- * @return {Array|String}                     A list of blocks or a string, depending on `handlerMode`.
+ * @param  {String}        options.HTML                   The HTML to convert.
+ * @param  {String}        [options.plainText]            Plain text version.
+ * @param  {String}        [options.mode]                 Handle content as blocks or inline content.
+ *                                                        * 'AUTO': Decide based on the content passed.
+ *                                                        * 'INLINE': Always handle as inline content, and return string.
+ *                                                        * 'BLOCKS': Always handle as blocks, and return array of blocks.
+ * @param  {Array}         [options.autoInlineModeTags]   An array of tags that when mode is auto will trigger inline mode.
+ * @return {Array|String}                                 A list of blocks or a string, depending on `handlerMode`.
  */
-export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', additionalInlineNodes = [] } ) {
+export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', autoInlineModeTags = [] } ) {
 	// First of all, strip any meta tags.
 	HTML = HTML.replace( /<meta[^>]+>/, '' );
 
@@ -65,7 +66,7 @@ export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', addit
 	const hasShortcodes = pieces.length > 1;
 
 	// True if mode is auto, no shortcode is included and HTML verifies the isInlineContent condition
-	const isAutoModeInline = mode === 'AUTO' && isInlineContent( HTML, additionalInlineNodes ) && ! hasShortcodes;
+	const isAutoModeInline = mode === 'AUTO' && isInlineContent( HTML, autoInlineModeTags ) && ! hasShortcodes;
 
 	// Return filtered HTML if condition is true
 	if ( mode === 'INLINE' || isAutoModeInline ) {
@@ -74,7 +75,7 @@ export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', addit
 			formattingTransformer,
 			stripAttributes,
 			commentRemover,
-			createUnwrapper( ( node ) => ! isInline( node, additionalInlineNodes ) ),
+			createUnwrapper( ( node ) => ! isInline( node, autoInlineModeTags ) ),
 		] );
 
 		// Allows us to ask for this information when we get a report.
