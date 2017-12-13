@@ -42,6 +42,38 @@ describe( 'rawHandler', () => {
 		unregisterBlockType( 'test/figure' );
 	} );
 
+	it( 'uses inline mode if mode is auto and autoInlineModeTags is used', () => {
+		registerBlockType( 'test/figure', {
+			category: 'common',
+			title: 'test figure',
+			attributes: {
+				content: {
+					type: 'array',
+					source: 'children',
+					selector: 'figure',
+				},
+			},
+			transforms: {
+				from: [
+					{
+						type: 'raw',
+						isMatch: ( node ) => node.nodeName === 'FIGURE',
+					},
+				],
+			},
+			save: () => {},
+		} );
+
+		const result = rawHandler( {
+			HTML: '<figure>test</figure>',
+			mode: 'AUTO',
+			autoInlineModeTags: [ 'figure' ],
+		} );
+
+		equal( result, '<figure>test</figure>' );
+		unregisterBlockType( 'test/figure' );
+	} );
+
 	it( 'should handle unknown raw content', () => {
 		registerBlockType( 'test/unknown', {
 			category: 'common',

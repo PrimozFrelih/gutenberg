@@ -12,6 +12,7 @@ describe( 'stripWrappers', () => {
 	it( 'should be inline content', () => {
 		equal( isInlineContent( '<em>test</em>' ), true );
 		equal( isInlineContent( '<span>test</span>' ), true );
+		equal( isInlineContent( '<div>test</div>', [ 'div' ] ), true );
 	} );
 
 	it( 'should not be inline content', () => {
