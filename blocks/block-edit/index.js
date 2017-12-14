@@ -17,8 +17,8 @@ import {
 	hasBlockSupport,
 } from '../api';
 
-function BlockEdit( props ) {
-	const { name, attributes } = props;
+export function BlockEdit( props ) {
+	const { name, attributes = {} } = props;
 	const blockType = getBlockType( name );
 
 	if ( ! blockType ) {
