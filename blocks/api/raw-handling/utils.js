@@ -1,7 +1,17 @@
 /**
+ * External dependencies
+ */
+import { find, includes } from 'lodash';
+
+/**
  * Browser dependencies
  */
 const { ELEMENT_NODE, TEXT_NODE } = window.Node;
+
+const inlineWhitelistTagGroups = [
+	[ 'UL', 'LI', 'OL' ],
+	[ 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' ],
+];
 
 const inlineWhitelist = {
 	strong: {},
@@ -63,8 +73,18 @@ export function isAttributeWhitelisted( tag, attribute ) {
 	);
 }
 
-export function isInline( node, additionalInlineWhitelist = [] ) {
-	return !! inlineWhitelist[ node.nodeName.toLowerCase() ] || additionalInlineWhitelist.indexOf( node.nodeName.toLowerCase() ) !== -1;
+function nodeIsInlineOnSpecificTag( nodeName, tagName ) {
+	if ( ! tagName || ! nodeName ) {
+		return false;
+	}
+	return includes(
+		find( inlineWhitelistTagGroups, group => includes( group, tagName.toUpperCase() ) ),
+		nodeName,
+	);
+}
+
+export function isInline( node, tagName ) {
+	return !! inlineWhitelist[ node.nodeName.toLowerCase() ] || nodeIsInlineOnSpecificTag( node.nodeName, tagName );
 }
 
 export function isInlineWrapper( node ) {

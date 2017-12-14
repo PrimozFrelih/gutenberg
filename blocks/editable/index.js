@@ -4,7 +4,6 @@
 import tinymce from 'tinymce';
 import classnames from 'classnames';
 import {
-	includes,
 	last,
 	isEqual,
 	omitBy,
@@ -73,10 +72,6 @@ function getFormatProperties( formatName, parents ) {
 
 const DEFAULT_FORMATS = [ 'bold', 'italic', 'strikethrough', 'link' ];
 
-const AUTO_INLINE_MODE_TAG_GROUPS = [
-	[ 'ul', 'li', 'ol' ],
-	[ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
-];
 export default class Editable extends Component {
 	constructor( props ) {
 		super( ...arguments );
@@ -352,14 +347,12 @@ export default class Editable extends Component {
 		} else if ( this.props.onSplit ) {
 			mode = 'AUTO';
 		}
-		const autoInlineModeTags = this.props.pasteAutoInlineModeTags ||
-			find( AUTO_INLINE_MODE_TAG_GROUPS, group => includes( group, this.props.tagName ) );
 
 		const content = rawHandler( {
 			HTML: this.pastedContent || HTML,
 			plainText: this.pastedPlainText,
 			mode,
-			autoInlineModeTags,
+			tagName: this.props.tagName,
 		} );
 
 		if ( typeof content === 'string' ) {
